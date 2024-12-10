@@ -80,6 +80,11 @@ BitcoinExchange	&BitcoinExchange::operator=(BitcoinExchange & copy)
 
 BitcoinExchange::~BitcoinExchange() {}
 
+std::string BitcoinExchange::findClosest(std::string date)
+{
+	auto low = _db.lower_bound(date);
+}
+
 void BitcoinExchange::printValue(std::string input)
 {
 	std::ifstream inputFile;
@@ -118,7 +123,10 @@ void BitcoinExchange::printValue(std::string input)
 			else if (value < 0 || value > 1000)
 				std::cout << "valeur non valide" << std::endl;
 			else
-				std::cout << date << "|c|" << charvalue << std::endl;
+			{
+				std::string closestdate = findClosest(date);
+				std::cout << date << "=> " << value << " = " << value * _db[closestdate];
+			}
 		}
 	}
 }

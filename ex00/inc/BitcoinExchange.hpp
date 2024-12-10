@@ -7,6 +7,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 class BitcoinExchange
 {
@@ -32,6 +33,6 @@ class BitcoinExchange
 
 bool isLeapYear(unsigned int year);
 unsigned int	daysInMonth(unsigned int year,unsigned int month);
-bool isValidDate(unsigned int year, unsigned int month, unsigned int day);
+bool isValidDate(std::string);
 
 #endif
