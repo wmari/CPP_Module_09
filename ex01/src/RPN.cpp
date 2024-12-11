@@ -30,6 +30,8 @@ RPN::~RPN()
 
 void RPN::calculate(std::string input)
 {
+	double a, b;
+
 	for (size_t i = 0; i < input.size(); i++)
 	{
 		switch (input[i])
@@ -40,7 +42,6 @@ void RPN::calculate(std::string input)
 		case '+':
 			if (this->num.size() >= 2)
 			{
-				double a, b;
 				a = this->num.top();
 				this->num.pop();
 				b = this->num.top();
@@ -57,7 +58,6 @@ void RPN::calculate(std::string input)
 		case '-':
 			if (this->num.size() >= 2)
 			{
-				double a, b;
 				a = this->num.top();
 				this->num.pop();
 				b = this->num.top();
@@ -74,7 +74,6 @@ void RPN::calculate(std::string input)
 		case '/':
 			if (this->num.size() >= 2)
 			{
-				double a, b;
 				a = this->num.top();
 				this->num.pop();
 				b = this->num.top();
@@ -97,7 +96,6 @@ void RPN::calculate(std::string input)
 		case '*':
 			if (this->num.size() >= 2)
 			{
-				double a, b;
 				a = this->num.top();
 				this->num.pop();
 				b = this->num.top();
