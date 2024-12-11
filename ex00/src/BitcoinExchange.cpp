@@ -119,6 +119,7 @@ BitcoinExchange::BitcoinExchange()
 		if (isValidDate(year, month, day))
 			_db[date] = value;
 	}
+	inputFile.close();
 	return ;
 }
 
@@ -177,6 +178,11 @@ void BitcoinExchange::printValue(std::string input)
 	if (!inputFile.is_open())
 	{
 		std::cout << "Error: could not open file " << input << std::endl;
+		return ;
+	}
+	if (this->_db.empty())
+	{
+		std::cout << "Error: db is empty" << std::endl;
 		return ;
 	}
 	std::string line;
