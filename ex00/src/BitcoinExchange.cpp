@@ -40,9 +40,12 @@ bool isValidLineDB(std::string line)
 	std::string::const_iterator it = valuePart.begin();
 	if (valuePart.empty())
 		return false;
+	int nbPoint = 0;
 	while (it != valuePart.end())
 	{
-		if (!std::isdigit(*it))
+		if (*it == '.')
+			nbPoint++;
+		if ((!std::isdigit(*it) && *it != '.')|| nbPoint > 1)
 			return false;
 		it++;
 	}
@@ -71,9 +74,21 @@ bool isValidLineInput(std::string line)
 	std::string::const_iterator it = valuePart.begin();
 	if (valuePart.empty())
 		return false;
+	int nbPoint = 0;
 	while (it != valuePart.end())
 	{
-		if (!std::isdigit(*it))
+		if (*it == '.' && it == valuePart.begin())
+			return false;
+		if (*it == '.' && it != valuePart.begin())
+			nbPoint++;
+		if (*it == '-' && it != valuePart.begin())
+			return false;
+		else if (*it == '-')
+		{
+			it++;
+			continue;
+		}
+		if ((!std::isdigit(*it) && *it != '.')|| nbPoint > 1)
 			return false;
 		it++;
 	}
@@ -180,14 +195,15 @@ void BitcoinExchange::printValue(std::string input)
 		std::cout << "Error: could not open file " << input << std::endl;
 		return ;
 	}
-	if (this->_db.empty())
-	{
-		std::cout << "Error: db is empty" << std::endl;
-		return ;
-	}
+	int i = 0;
 	std::string line;
 	while (std::getline(inputFile, line))
 	{
+		if (i == 0)
+		{
+			i = 1;
+			continue;
+		}
 		try 
 		{
 			if (!isValidLineInput(line))
@@ -206,7 +222,7 @@ void BitcoinExchange::printValue(std::string input)
 				ss >> year >> del1 >> month >> del2 >> day >> del3 >> value;
 				date = (year * 10000) + (month * 100) + day;
 				if (!isValidDate(year, month, day))
-					throw std::invalid_argument("Error: bad input => " + strdate);
+					throw std::invalid_argument("Error: date invalide => " + strdate);
 				else if (value > 1000)
 					throw TooLargeNumberException();
 				else if (value < 0)
@@ -224,4 +240,9 @@ void BitcoinExchange::printValue(std::string input)
 		}
 	}
 	inputFile.close();
+}
+
+bool BitcoinExchange::dbEmpty()
+{
+	return (this->_db.empty());
 }

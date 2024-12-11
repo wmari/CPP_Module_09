@@ -24,6 +24,7 @@ class BitcoinExchange
 		~BitcoinExchange();
 		
 		void	printValue(std::string date);
+		bool	dbEmpty();
 
 		class NotPositiveNumberException : public std::exception
 		{
