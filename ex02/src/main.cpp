@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 		std::cout << " [...]";
 	std::cout << std::endl;
 	// clock_t time;
-	
-	
+	sort_vect(argv_to_vector(argc, argv), 1);
+
 	return (0);
 }
