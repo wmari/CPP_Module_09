@@ -64,13 +64,13 @@ int main(int argc, char **argv)
 		std::cout << " [...]";
 	std::cout << std::endl;
 	print_ordered(vect);
-	std::cout << "Time to process a range of\t" << vect.size() << " elements with std::vector : " << time_in_micro << "ms" <<std::endl;
+	std::cout << "Time to process a range of\t" << vect.size() << " elements with std::vector :\t" << time_in_micro << "ms" <<std::endl;
 	clock_t dqtime = clock();
 	dequ = sort_dequ(argv_to_deque(argc, argv), 1);
 	clock_t endtimedequ = clock();
 	print_ordered_deque(dequ);
 	double time_dequ = static_cast<double>(endtimedequ - dqtime);
 	time_in_micro = (time_dequ / CLOCKS_PER_SEC) * 1e3;
-	std::cout << "Time to process a range of\t" << vect.size() << " elements with std::deque : " << time_in_micro << "ms" <<std::endl;
+	std::cout << "Time to process a range of\t" << vect.size() << " elements with std::deque :\t" << time_in_micro << "ms" <<std::endl;
 	return (0);
 }

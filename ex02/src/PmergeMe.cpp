@@ -51,6 +51,9 @@ std::vector<int> argv_to_vector(int ac, char **argv)
 	return res;
 }
 
+
+// ALGORITHME WITH STD::VECTOR
+
 std::vector<std::vector<int> > making_pairs_vect(std::vector<int> vector, size_t taille)
 {
 	std::vector<std::vector<int> > workplace;
@@ -256,6 +259,10 @@ std::vector<int> sort_vect(std::vector<int> vector, size_t nbrec)
 	
 	return vector;
 }
+
+
+
+// ALGORITHME WITH STD::DEQUE
 
 std::deque<std::deque<int> > making_pairs_dequ(std::deque<int> deque, size_t taille)
 {
