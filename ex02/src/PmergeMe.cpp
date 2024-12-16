@@ -145,53 +145,112 @@ bool compare(std::vector<int>lit, std::vector<int>rit)
 	return (*lit.rbegin() < *rit.rbegin());
 }
 
+int	max_bound_work(std::vector<std::vector<int> >work, size_t taille)
+{
+	int max = 0;
+	std::vector<std::vector<int> >::iterator it = work.begin();
+	while (it != work.end())
+	{
+		if (it->size() != taille)
+			return max;
+		max++;
+		it++;
+	}
+	return max;
+}
+
+std::vector<std::vector<int> >insert_pend_to_work(std::vector<std::vector<int> >work, std::vector<std::vector<int> >pend, bool isodd)
+{
+	if (pend.empty())
+		return work;
+	std::vector<int> oddone;
+	if (isodd)
+	{
+		oddone = pend.back();
+		pend.pop_back();
+	}
+	size_t pre_jacobsthal = (std::pow(2, 2) + std::pow(-1, 1)) / 3;
+	size_t inserted = 0;
+
+	for (int k = 2;; k++)
+	{
+		size_t current_jacob = (std::pow(2, k + 1) + std::pow(-1, k))/ 3;
+		size_t jacob_diff = current_jacob - pre_jacobsthal;
+		int offset = 0;
+		if (jacob_diff > pend.size())
+			break;
+		int nbr_time = jacob_diff;
+		std::vector<std::vector<int> >::iterator pend_it = pend.begin() + (jacob_diff - 1);
+		std::vector<std::vector<int> >::iterator upbound_it = work.begin() + current_jacob + inserted;
+		while (nbr_time)
+		{
+			std::vector<std::vector<int> >::iterator place_it;
+			place_it = std::upper_bound(work.begin(), upbound_it, *pend_it, compare);
+			std::vector<std::vector<int> >::iterator placed = work.insert(place_it, *pend_it);
+			nbr_time--;
+			pend_it = pend.erase(pend_it);
+			std::advance(pend_it, -1);
+			std::vector<std::vector<int> >::iterator nb_it = work.begin();
+			size_t nb = 0;
+			while (nb_it != placed)
+			{
+				nb++;
+				nb_it++;
+			}
+			if (nb == current_jacob + inserted)
+				offset++;
+			upbound_it = work.begin() + (current_jacob + inserted - offset);
+		}
+		pre_jacobsthal = current_jacob;
+		inserted += jacob_diff;
+		offset = 0;
+	}
+
+	for (size_t i = 0; i < pend.size(); i++)
+	{
+		std::vector<std::vector<int> >::iterator this_pend_it = pend.begin() + i;
+		std::vector<std::vector<int> >::iterator this_bound_it = work.begin() + (work.size() - pend.size() + i);
+		std::vector<std::vector<int> >::iterator place_it;
+		place_it = std::upper_bound(work.begin(), this_bound_it, *this_pend_it, compare);
+		work.insert(place_it, *this_pend_it);
+	}
+
+	if (isodd)
+		work.insert(std::upper_bound(work.begin(), work.end(), oddone, compare), oddone);
+
+	return work;
+	
+}
+
 std::vector<int> insert_vect(std::vector<int> vec, size_t taille)
 {
+
+	bool isodd = (vec.size() / taille) % 2;
 	std::vector<std::vector<int> > work = making_pairs_vect(vec, taille);
 	std::vector<std::vector<int> > pend = getting_pend_vect(work, taille);
 	work = delete_work_vect(work, taille);
-	
-	std::vector<std::vector<int> >::iterator it;
-	for (size_t i = 0; i < pend.size(); i++)
+	std::vector<int> leftover;
+	if (work.rbegin()->size() != taille)
 	{
-		// if (taille == 2)
-		// {
-		// 	std::cout << "comparaison : pend.begin() + i = " << *(pend.begin() + i) << " | "
-		// }
-		it = std::upper_bound(work.begin(), work.begin() + (work.size() - pend.size() + i), *(pend.begin() + i), compare);
-		work.insert(it, *(pend.begin() + i));
+		leftover = work.back();
+		work.pop_back();
 	}
-
-	// std::vector<std::vector<int> >::iterator it = pend.begin();
-	// std::vector<std::vector<int> >::iterator it2;
-	// while (it != pend.end())
-	// {
-	// 	it2 = work.begin();
-	// 	while (it2 != work.end())
-	// 	{
-	// 		if (*it2->rbegin() > *it->rbegin())
-	// 		{
-	// 			work.insert(it2,*it);
-	// 			break ;
-	// 		}
-	// 		it2++;
-	// 	}
-	// 	it++;
-	// }
-
+	work = insert_pend_to_work(work, pend, isodd);
+	work.push_back(leftover);
 	vec.clear();
 	for (size_t i = 0; i < work.size(); i++)
 	{
 		for (size_t j = 0; j < work[i].size(); j++)
 			vec.push_back(work[i][j]);
 	}
-	// std::cout << "jacobsthal = " << (std::pow(2, nbrec + 1) + std::pow(-1, nbrec)) / 3 << std::endl;
+
 	
 	return vec;
 }
 
 std::vector<int> sort_vect(std::vector<int> vector, size_t nbrec)
 {
+	std::vector<int>::iterator it;
 	size_t taille = std::pow(2, nbrec);
 	std::vector<std::vector<int> > workplace = making_pairs_vect(vector, taille);
 	workplace = shuffle_workplace(workplace, taille);
@@ -201,39 +260,12 @@ std::vector<int> sort_vect(std::vector<int> vector, size_t nbrec)
 		for (size_t j = 0; j < workplace[i].size(); j++)
 			vector.push_back(workplace[i][j]);
 	}
-	std::cout << "falling nbrec=" << nbrec << std::endl;
-	std::vector<int>::iterator it = vector.begin();
-	while (it != vector.end())
-	{
-		std::cout << *it << " ";
-		it++;
-	}
-	std::cout << std::endl;
-
 	if (2 * taille < vector.size())
-	{
-		vector = sort_vect(vector, nbrec + 1);
-	}
-	std::cout << "rising nbrec=" << nbrec << std::endl;
+		vector = sort_vect(vector, nbrec + 1);	
+	
 	vector = insert_vect(vector, taille);
-	it = vector.begin();
-	while (it != vector.end())
-	{
-		std::cout << *it << " ";
-		it++;
-	}
-	std::cout << std::endl;
 	if (nbrec == 1)
-	{
 		vector = insert_vect(vector, 1);
-		it = vector.begin();
-		while (it != vector.end())
-		{
-			std::cout << *it << " ";
-			it++;
-		}
-		std::cout << std::endl;
-	}
 	
 	return vector;
 }

@@ -1,6 +1,19 @@
 #include "PmergeMe.hpp"
 #define MAX_PRINT 20
 
+void	print_ordered(std::vector<int> vec)
+{
+	for (size_t i = 1; i < vec.size(); i++)
+	{
+		if (vec[i] < vec[i -1])
+		{
+			std::cout << "array is not sorted" << std::endl;
+			return;
+		}
+	}
+	std::cout << "array is sorted" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	if (!validInput(argc, argv))
@@ -23,7 +36,7 @@ int main(int argc, char **argv)
 		std::cout << " [...]";
 	std::cout << std::endl;
 	// clock_t time;
-	sort_vect(argv_to_vector(argc, argv), 1);
-
+	vect = sort_vect(argv_to_vector(argc, argv), 1);
+	print_ordered(vect);
 	return (0);
 }
