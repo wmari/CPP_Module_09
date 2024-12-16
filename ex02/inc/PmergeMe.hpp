@@ -13,7 +13,7 @@
 #include <cmath>
 
 std::vector<int> sort_vect(std::vector<int> vector, size_t nbrec);
-void sort_deque(std::deque<int> deque);
+std::deque<int> sort_dequ(std::deque<int> deque, size_t nbrec);
 std::vector<int> argv_to_vector(int ac, char **argv);
 std::deque<int> argv_to_deque(int ac, char **argv);
 bool validInput(int ac, char **av);
